@@ -8,6 +8,6 @@
 
 @import UIKit;
 
-@interface JSViewController : UIViewController
+@interface ViewController : UIViewController
 
 @end

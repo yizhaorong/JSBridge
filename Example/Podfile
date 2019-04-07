@@ -8,6 +8,5 @@ target 'JSBridge_Example' do
   target 'JSBridge_Tests' do
     inherit! :search_paths
 
-    pod 'FBSnapshotTestCase'
   end
 end
