@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<style>
+    button {
+        font-size: 44px;
+    }
+
+</style>
+
+<body>
+
+    <button onclick="send()">异步发送</button>
+    <button onclick="syncSend()">同步发送</button>
+    <button onclick="callJS()">调用JS</button>
+    <button onclick="sendEvent()">发送事件</button>
+    <div id="log"></div>
+    <script>
+        var bridge = window.JSBridge;
+        function send() {
+            bridge.callHandler("nativeLog", { "text": "asyncSend" }, function (resultObj) {
+                appendText("异步回调:" + resultObj["result"]);
+            });
+        }
+
+        function syncSend() {
+            var resultjson = bridge.syncCallHandler("nativeLog", { "text": "asyncSend" }, function (resultObj) {
+                appendText("异步回调:" + resultObj["result"]);
+            });
+            appendText("同步结果:" + resultjson["result"]);
+        }
+
+        function callJS() {
+            bridge.callHandler("callJS");
+        }
+
+        function sendEvent() {
+            bridge.callHandler("sendEvent");
+        }
+
+        bridge.registerHandler('testJavascriptHandler', function (data) {
+            appendText(JSON.stringify(data));
+            var responseData = { 'Javascript Says': 'Right back atcha!' };
+            return responseData;
+        });
+
+        bridge.onListenEvent('applicationEnterBackground', function () {
+            appendText('home press')
+        });
+
+        bridge.onListenEvent('applicationEnterBackground', function () {
+            appendText('第二个监听')
+        });
+
+        function appendText(text) {
+            var para = document.createElement("p");
+            var node = document.createTextNode(text);
+            para.appendChild(node);
+            var element = document.getElementById("log");
+            element.appendChild(para);
+        }
+    </script>
+</body>
+
+</html>
